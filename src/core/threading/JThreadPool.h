@@ -40,10 +40,14 @@ public:
     /// @name Constructors/Destructor
     /// @{
 
-    ThreadPool(size_t numThreads = std::thread::hardware_concurrency()) {
-        if (numThreads) {
-            initialize(numThreads);
-        }
+    ThreadPool(size_t numThreads = std::thread::hardware_concurrency())
+	{
+		if (numThreads) {
+			initialize(numThreads);
+		}
+		else {
+			m_numThreads = 0;
+		}
     }
     ~ThreadPool() {
         shutdown();
@@ -73,18 +77,18 @@ public:
     
 	/// @brief Check if a thread has failed, rethrowing an error if it has
 	void throwOnFailure(){
-		std::unique_lock(m_exceptionMutex); // Need thread-safety
+		std::unique_lock lock(m_exceptionMutex); // Need thread-safety
 		if(m_exceptionPtr){
 			// Rethrow exception so threads don't silently fail
 			std::string exceptionStr = m_exceptionStr;
-			std::rethrow_esception(m_exceptionPtr);
+			std::rethrow_exception(m_exceptionPtr);
 		}
 	}
 	
 	/// @brief Add a job to the task queue
 	template<typename ...Args>
 	void addTask(Args... args){
-		addTask(std::bind(args...));
+		addTask_impl(std::bind(args...));
 	}
 	
 	/// @brief Shutdown all of the threads in the pool
@@ -111,7 +115,7 @@ private:
     /// @name Methods
     /// @{
 		
-	void addTask(std::function<void()> task){
+	void addTask_impl(std::function<void()> task){
 		{
 			std::unique_lock lock(m_queueMutex);
 			m_tasks.push(task);
@@ -162,7 +166,7 @@ private:
 				std::unique_lock lock(m_queueMutex);
 				m_controller.wait(lock, [this]{return !m_tasks.empty() || m_shutdown;});
 				
-				if(!m_shutdown && m_tasks.empty()){
+				if(m_shutdown && m_tasks.empty()){
 					// No tasks and is shutting down, so break the loop
 					break;
 				}

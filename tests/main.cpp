@@ -13,6 +13,7 @@
 #include "JTestSuite.h"
 #include "unit_tests/JTestTimer.h"
 #include "unit_tests/JTestUnits.h"
+#include "unit_tests/JTestThreadpool.h"
 
 using namespace joby;
 
@@ -21,6 +22,7 @@ int main(int argc, char* argv[]) {
     TestSuite tests;
     tests.addTest(new TimerTest());
     tests.addTest(new UnitsTest());
+    tests.addTest(new ThreadpoolTest());
 
     // Run tests
     tests.runTests();
