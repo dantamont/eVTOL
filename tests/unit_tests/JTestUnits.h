@@ -1,12 +1,11 @@
-#ifndef TEST_TIMER_H
-#define TEST_TIMER_H
+#ifndef TEST_UNITS_H
+#define TEST_UNITS_H
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Includes
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "../JTest.h"
-#include <core/time/JTimer.h>
-#include <core/diagnostics/JLogger.h>
+#include <core/physics/JUnits.h>
 
 namespace joby{
 
@@ -14,26 +13,23 @@ namespace joby{
 // Tests
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class TimerTest : public Test
+class UnitsTest : public Test
 {
 public:
 
-    TimerTest(): Test(){}
-    ~TimerTest() {}
+    UnitsTest(): Test(){}
+    ~UnitsTest() {}
 
     /// @brief Perform unit tests for Timer class
     virtual void perform() {
 
-        // Create and run timer
-        Timer timer;
-        timer.start();
+        // Test a few unit conversions as a proof of concept
+        // TODO: Test all possible combinations of units
+        size_t numSeconds = Units::ConvertToSI<TimeUnits::kDays>(1);
+        assert_(numSeconds == 86400);
 
-        // Run timer for a second to confirm that it works
-        double elapsedTime = 0;
-        while (elapsedTime < 1) {
-            elapsedTime = timer.getElapsed<double>();
-            Logger::LogInfo(std::to_string(elapsedTime).c_str());
-        }
+        size_t numMinutes = Units::Convert<TimeUnits::kDays, TimeUnits::kMinutes>(1);
+        assert_(numMinutes == 1440);
     }
 };
 
