@@ -32,8 +32,10 @@ public:
         size_t numMinutes = Units::Convert<TimeUnits::kDays, TimeUnits::kMinutes>(1);
         assert_(numMinutes == 1440);
 
-        size_t numMinutes1 = Units::Convert_impl<TimeUnits, TimeUnits::kSeconds, TimeUnits::kMinutes>(60);
-        assert_(numMinutes1== 1);
+        //size_t numMinutes1 = Units::Convert_impl<TimeUnits, TimeUnits::kSeconds, TimeUnits::kMinutes>(60);
+        //assert_(numMinutes1== 1);
+
+        //size_t numMinutes1 = Units::Convert<TimeUnits::kSeconds, AngularUnits::kDegrees>(60);
 
         size_t numMinutes2 = Units::Convert<TimeUnits::kSeconds, TimeUnits::kMinutes>(60);
         assert_(numMinutes2 == 1);
@@ -49,7 +51,7 @@ public:
         assert_(approxEqual(degs, 180 / 3.14159265358979323846));
 
 
-        double meters = 1.0;
+        double meters = 100.0;
         bool same = std::is_same_v<DistanceUnits, AngularUnits>;
         assert_(!same);
         double kmeters = Units::Convert<DistanceUnits::kMeters, DistanceUnits::kKilometers>(meters);

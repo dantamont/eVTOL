@@ -42,21 +42,6 @@ public:
 
     /// @};
 
-    //-----------------------------------------------------------------------------------------------------------------
-    /// @name Public Methods
-    /// @{
-
-    //IType value() const { return m_value; }
-
-    //template<typename ToUnits, ToUnits NewVal>
-    //Quantity_impl<ToUnits, EnumVal> to() {
-    //    // Compile-time check for compatible unit type
-    //    static_assert(std::is_same_v<ToUnits, EnumType>, "Error, incompatible units");
-    //    return Units::Convert<EnumVal, NewVal>(m_value);
-    //}
-
-    /// @}
-
 private:
     /// @brief Allow access via Quantity class
     friend class Quantity<EnumVal, IType>;
