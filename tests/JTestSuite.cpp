@@ -1,12 +1,14 @@
-#include "GTestSuite.h"
-#include "GTest.h"
-#include <core/containers/GbString.h>
+#include "JTestSuite.h"
+#include "JTest.h"
+#include <typeinfo>
 
+#include <core/diagnostics/JLogger.h>
+#include <core/containers/JString.h>
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Begin namespace
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace Gb {
+namespace joby {
 
 
 TestSuite::TestSuite()
@@ -27,14 +29,15 @@ void TestSuite::addTest(Test * test)
 
 void TestSuite::runTests() const
 {
+    Logger::LogInfo("Running tests");
     for (Test* test : m_tests) {
         const char* testClassName = typeid(*test).name();
         try {
             test->perform();
-            Logger::LogInfo(GString::Format("%s:: Test passed", testClassName).c_str());
+            Logger::LogInfo(JString::Format("%s:: Test passed", testClassName).c_str());
         }
         catch (...) {
-            Logger::LogError(GString::Format("Test failure in: %s", testClassName).c_str());
+            Logger::LogError(JString::Format("Test failure in: %s", testClassName).c_str());
         }
     }
 }

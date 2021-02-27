@@ -34,7 +34,7 @@ file(GLOB_RECURSE MY_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp"  "src/*.h"
 
 # Get all the source files to build the test suite
 file(GLOB_RECURSE MY_TEST_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.cpp" "src/*.h" "resources/*.qrc" "ui/*.ui" "tests/*.cpp" "tests/*.h")
-list(FILTER MY_TEST_SOURCES EXCLUDE REGEX "src/main.cpp")
+list(FILTER MY_TEST_SOURCES EXCLUDE REGEX "src/apps/eVTOL/main.cpp")
 
 message (STATUS "=========== FOUND FILES =============")
 message (STATUS "${MY_SOURCES}")

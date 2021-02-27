@@ -8,29 +8,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Standard
 #include <string>
-#include <iostream>
-#include <fstream>
-
+#include <array>
+#include <mutex>
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Namespace Definitions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-namespace Gb {
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Logging Constants
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/** @brief Defines some named log levels.
-    @details Log levels range from 0 to 100, with 100 representing a critical error and lower numbers describe
-	    lesser errors, informational messages and debugging messages.
-*/
-enum class LogLevel : unsigned int {
-    kDebug,
-    kInfo,
-    kWarning,
-    kError,
-    kCritical
-};
+namespace joby {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Forward Declarations
@@ -39,7 +23,23 @@ enum class LogLevel : unsigned int {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Class Definitions
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief Defines some named log levels.
+/// @details Log levels range from 0 to 100, with 100 representing a critical error and lower numbers describe
+/// lesser errors, informational messages and debugging messages.
+enum class LogLevel : unsigned int {
+    kDebug,
+    kInfo,
+    kWarning,
+    kError,
+    kCritical,
+    COUNT
+};
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @class Logger
+/// @brief A singleton Logger class to be used for standardized message logging
 class Logger {
 public:
     //-----------------------------------------------------------------------------------------------------------------
@@ -49,7 +49,8 @@ public:
     /// @brief Get the singleton instance of Logger
     static Logger& Get();
 
-    // Wrappers for logging routines
+    static void LogDebug(const char* msg);
+
     static void LogInfo(const char* msg);
 
     static void LogWarning(const char* msg);
@@ -57,6 +58,14 @@ public:
     static void LogError(const char* msg);
 
     static void LogCritical(const char* msg);
+
+    /// @}
+
+    //-----------------------------------------------------------------------------------------------------------------
+    /// @name Destructor
+    /// @{
+
+    ~Logger();
 
     /// @}
 
@@ -74,12 +83,37 @@ public:
     void logMessage(const char* message, LogLevel level);
 
 	/// @}
-private:
-    Logger();
-    ~Logger();
+protected:
 
-    static std::vector<LogLevel, std::string> s_levelNames;
+    //-----------------------------------------------------------------------------------------------------------------
+    /// @name Constructor
+    /// @{
+
+    Logger();
+
+    /// @}
+
+    //-----------------------------------------------------------------------------------------------------------------
+    /// @name Members
+    /// @{
+
     std::mutex m_loggerMutex;
+
+    /// @}
+
+    //-----------------------------------------------------------------------------------------------------------------
+    /// @name Static
+    /// @{
+
+    /// @brief The singleton instance of the loger
+    static std::unique_ptr<Logger> s_instance;
+
+    /// @brief The header strings to be prepended to messages of each LogLevel
+    static std::array<std::string, (size_t)LogLevel::COUNT> s_levelNames;
+
+    /// @}
+
+
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

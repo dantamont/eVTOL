@@ -1,29 +1,30 @@
+/*
+  @file main.cpp
+  @author Dante tufano
+  @date 2/26/2021
+  @brief File driving tests for the eVTOL application
+
+  This project is meant to be used for unit and integration testing
+  @see https://www.jobyaviation.com/
+ */
+
 #include <iostream>
 
-#include "GTestSuite.h"
-#include "unit_tests/GTestDagNode.h"
-#include "unit_tests/GTestEulerAngle.h"
-#include "unit_tests/GTestMatrix.h"
-#include "unit_tests/GTestParallelization.h"
-#include "unit_tests/GTestProtocol.h"
-#include "unit_tests/GTestQuaternion.h"
-#include "unit_tests/GTestVector.h"
+#include "JTestSuite.h"
 
-using namespace Gb;
+using namespace joby;
 
 int main(int argc, char* argv[]) {
     // Create tests
     TestSuite tests;
-    tests.addTest(new DagNodeTest());
-    tests.addTest(new EulerAnglesTest());
-    tests.addTest(new MatrixTest());
-    tests.addTest(new ParallelizationTest());
-    tests.addTest(new ProtocolTest());
-    tests.addTest(new QuaternionTest());
-    tests.addTest(new VectorTest());
+    //tests.addTest(new Test());
 
     // Run tests
     tests.runTests();
+
+    // Wait until user closes window
+    std::cout << "Press ENTER to close the window.";
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     return 0;
 }

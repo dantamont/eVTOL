@@ -12,7 +12,7 @@
 
 int main(int argc, char *argv[])
 {
-    joby::Logger("Running application");
+    joby::Logger::LogInfo("Running eVTOL application");
 	
     return 0;
 }
