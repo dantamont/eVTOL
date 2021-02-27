@@ -63,17 +63,17 @@ public:
 
     template<auto From, auto To, typename T>
     static T Convert(T v) {
-        return Convert_impl<decltype(From), From, To>(v);
+        return (T)Convert_impl<decltype(From), From, To>((double)v);
     }
 
     template<auto From, typename T>
     static T ConvertToSI(T v) {
-        return ConvertToSI_impl<decltype(From), From>(v);
+        return (T)ConvertToSI_impl<decltype(From), From>((double)v);
     }
 
     template<auto To, typename T>
     static T ConvertFromSI(T v) {
-        return ConvertFromSI_impl<decltype(To), To>(v);
+        return (T)ConvertFromSI_impl<decltype(To), To>((double)v);
     }
 
     /// @}
@@ -111,69 +111,96 @@ protected:
             // Converting to SI units
             return ConvertToSI_impl<EnumType, From>(v);
         }
+        //else if constexpr (From == EnumType(0)) {
+        //    // Converting from SI units
+        //    return ConvertFromSI_impl<EnumType, To>(v);
+        //}
         else {
             // Convert to SI, and then from SI to the final output
-            return ConvertToSI_impl<EnumType, From>(v) * ConvertFromSI_impl<EnumType, To>(T(1.0));
+            // TODO: Fix precision issues with compile-time multiplication
+            //constexpr double combinedFactor = ToSIFactor<EnumType, From>() * FromSIFactor<EnumType, To>();
+            //return T(v * combinedFactor);
+            double p1 = ConvertToSI_impl<EnumType, From>(v);
+            double p2 = FromSIFactor<EnumType, To>();
+            return  p1 * p2;
         }
     }
     
 
     template<typename EnumType, EnumType From, typename T>
     static T ConvertToSI_impl(T v) {
+        return (T)(v * ToSIFactor<EnumType, From>());
+    }
+
+    template<typename EnumType, EnumType From>
+    static constexpr double ToSIFactor() {
         if constexpr (From == EnumType(0)) {
             // Converting from SI type to SI
-            return v;
+            return 1.0;
         }
         else {
             if constexpr (std::is_same_v<EnumType, AngularUnits>) {
                 constexpr double factor = s_angularConversionsToSI[(size_t)From];
-                return T(v * factor);
+                return factor;
             }
             else if constexpr (std::is_same_v<EnumType, DistanceUnits>) {
                 constexpr double factor = s_distanceConversionsToSI[(size_t)From];
-                return T(v * factor);
+                return factor;
             }
             else if constexpr (std::is_same_v<EnumType, TimeUnits>) {
                 constexpr double factor = s_timeConversionsToSI[(size_t)From];
-                return T(v * factor);
+                return factor;
             }
             else if constexpr (std::is_same_v<EnumType, MassUnits>) {
                 constexpr double factor = s_massConversionsToSI[(size_t)From];
-                return T(v * factor);
+                return factor;
             }
             else {
                 throw("Unrecognized enum type");
+                return 0.0;
             }
         }
     }
 
     template<typename EnumType, EnumType To, typename T>
     static T ConvertFromSI_impl(T v) {
+        return (T)(v * FromSIFactor<EnumType, To>());
+    }
+
+    template<typename EnumType, EnumType To>
+    static constexpr double FromSIFactor() {
         if constexpr (To == EnumType(0)) {
             // Converting from SI type to SI
-            return v;
+            return 1.0;
         }
         else {
             if constexpr (std::is_same_v<EnumType, AngularUnits>) {
                 constexpr double factor = 1.0 / s_angularConversionsToSI[(size_t)To];
-                return T(v * factor);
+                return factor;
             }
             else if constexpr (std::is_same_v<EnumType, DistanceUnits>) {
                 constexpr double factor = 1.0 / s_distanceConversionsToSI[(size_t)To];
-                return T(v * factor);
+                return factor;
             }
             else if constexpr (std::is_same_v<EnumType, TimeUnits>) {
                 constexpr double factor = 1.0 / s_timeConversionsToSI[(size_t)To];
-                return T(v * factor);
+                return factor;
             }
             else if constexpr (std::is_same_v<EnumType, MassUnits>) {
                 constexpr double factor = 1.0 / s_massConversionsToSI[(size_t)To];
-                return T(v * factor);
+                return factor;
             }
             else {
                 throw("Unrecognized enum type");
+                return 0.0;
             }
         }
+    }
+
+    template<typename T>
+    static constexpr size_t round(double x, double tolerance = 1e-8) {
+        static_assert(std::is_integral_v<T>, "T must be an integral type");
+        return T(x + tolerance);
     }
 
     /// @}
@@ -204,7 +231,7 @@ protected:
         60.0, // Minutes to seconds
         3600.0, // Hours to seconds
         24.0 * 3600.0, // Days to seconds
-        7 * 24.0 * 3600.0, // Weeks to seconds
+        7.0 * 24.0 * 3600.0, // Weeks to seconds
         365.25 * 24.0 * 3600.0 // Julian years to seconds
     };
 

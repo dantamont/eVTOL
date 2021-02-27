@@ -57,31 +57,58 @@ template<auto EnumVal, typename IType = double>
 class Quantity {
 public:
     //-----------------------------------------------------------------------------------------------------------------
-    /// @name Static Methods
-    /// @{
-    /// @}
-
-    //-----------------------------------------------------------------------------------------------------------------
     /// @name Constructor/Destructor
     /// @{
+
+    Quantity(IType value) :
+        m_impl(value) {
+
+    }
+    ~Quantity(){}
 
     /// @}
 
     //-----------------------------------------------------------------------------------------------------------------
     /// @name Properties
     /// @{
+
+    IType value() const { return m_impl.m_value; }
+    decltype(EnumVal) units() const { return EnumVal; }
+
     /// @}
 
     //-----------------------------------------------------------------------------------------------------------------
 	/// @name Public Methods
 	/// @{
+
+    template<auto ToUnits>
+    Quantity<ToUnits> to() {
+        // Compile-time check for compatible unit type
+        static_assert(std::is_same_v<decltype(ToUnits), decltype(EnumVal)>, "Error, incompatible units");
+        return Units::Convert<EnumVal, ToUnits>(m_impl.m_value);
+    }
+
 	/// @}
+
+    //-----------------------------------------------------------------------------------------------------------------
+    /// @name Operators
+    /// @{
+
+    operator IType() const {
+        return m_impl.m_value;
+    }
+
+    /// @}
+
 
 protected:
 
     //-----------------------------------------------------------------------------------------------------------------
     /// @name Members
     /// @{
+
+    /// @brief The encapsulated implementation of a quantity, wrapped for cleaner syntax
+    Quantity_impl<decltype(EnumVal), EnumVal, IType> m_impl;
 
     /// @}
 
