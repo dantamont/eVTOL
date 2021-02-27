@@ -11,13 +11,14 @@
 #include <iostream>
 
 #include "JTestSuite.h"
+#include "unit_tests/JTestTimer.h"
 
 using namespace joby;
 
 int main(int argc, char* argv[]) {
     // Create tests
     TestSuite tests;
-    //tests.addTest(new Test());
+    tests.addTest(new TimerTest());
 
     // Run tests
     tests.runTests();

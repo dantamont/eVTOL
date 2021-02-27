@@ -1,38 +1,40 @@
-#ifndef TEST_GB_VECTOR_H
-#define TEST_GB_VECTOR_H
+#ifndef TEST_TIMER_H
+#define TEST_TIMER_H
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Includes
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include "../GTest.h"
+#include "../JTest.h"
+#include <core/time/JTimer.h>
+#include <core/diagnostics/JLogger.h>
 
-namespace Gb{
+namespace joby{
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tests
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class VectorTest : public Test
+class TimerTest : public Test
 {
 public:
 
-    VectorTest(): Test(){}
-    ~VectorTest() {}
+    TimerTest(): Test(){}
+    ~TimerTest() {}
 
-    virtual void perform() override;
+    /// @brief Perform unit tests for Timer class
+    virtual void perform() {
 
-private:
-    void asJson();
-    void loadFromJson();
+        // Create and run timer
+        Timer timer;
+        timer.start();
 
-    void construction();
-    void index();
-    void assignment();
-    void addition();
-    void subraction();
-    void multiplication();
-    void division();
-    void dot();
-    void length();
+        // Run timer for a few seconds to confirm that it works
+        double elapsedTime = 0;
+        while (elapsedTime < 5) {
+            elapsedTime = timer.getElapsed<double>();
+            Logger::LogInfo(std::to_string(elapsedTime).c_str());
+        }
+    }
 };
 
 

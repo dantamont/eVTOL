@@ -49,14 +49,13 @@ public:
     /// @brief Get the singleton instance of Logger
     static Logger& Get();
 
+    // NOTE, in operational code, I would template these to allow for other string
+    // types, such as std::string
+    /// @brief Convenience methods for logging
     static void LogDebug(const char* msg);
-
     static void LogInfo(const char* msg);
-
     static void LogWarning(const char* msg);
-
     static void LogError(const char* msg);
-
     static void LogCritical(const char* msg);
 
     /// @}
