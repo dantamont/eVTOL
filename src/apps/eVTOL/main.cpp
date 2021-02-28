@@ -10,6 +10,7 @@
 
 #include <core/diagnostics/JLogger.h>
 #include <apps/eVTOL/sim/JScene.h>
+#include <core/sim/JSimulator.h>
 
 using namespace joby;
 
@@ -22,6 +23,10 @@ int main(int argc, char *argv[])
     // loading in a JSON file describing the scene, the different companies, their
     // vehicle specifications, the number of vehicles in the simulation, the
     // number of chargers, etc.
+
+    // NOTE: In production code, I would also leverage the Quantity class
+    // that I've included in this project to ensure that the correcr units
+    // are enforced
     Scene scene;
     scene.setChargerCount(3);
     scene.addCompany("Alpha",   Aircraft{ 120.0, 320.0, 0.6, 1.6, 4, 0.25 });
@@ -31,7 +36,7 @@ int main(int argc, char *argv[])
     scene.addCompany("Echo",    Aircraft{ 30, 150, 0.3, 5.8, 2, 0.61 });
 
     // Simulate
-    //Simulator sim;
+    Simulator sim;
     //sim.simulate(scene);
 
     // Vehicle metrics viewer?
